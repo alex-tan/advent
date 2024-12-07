@@ -45,7 +45,7 @@ when /(\d{4})-(\d+)/
     unless main.include?(module_)
       main.gsub!(
         "main :: IO ()",
-        <<-HASKELL
+        <<~HASKELL
           import #{module_} qualified
 
           main :: IO ()
