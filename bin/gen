@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+# typed: true
+
+format = ARGV[0]
+
+case format
+when /(\d{4})-(\d+)/
+  dir = "Y#{$1}"
+  file1 = "D#{$2}.hs"
+  file2 = "D#{$2}a.hs"
+
+  dir_name = File.join('./app', dir)
+  Dir.mkdir(dir_name) unless Dir.exist?(dir_name)
+
+  [file1, file2].each do |file|
+    path = File.join(dir_name, file)
+    if File.exist?(path)
+      puts "#{path} already exists"
+      next
+    end
+
+    template = File.read(File.join('./bin', 'Template.hs'))
+    File.open(path, 'w') do |f|
+      f.write(
+        template
+        .gsub("readFile \"\"", "readFile \"#{file}\"")
+        .gsub("module Y2024.D7", "module #{dir}.#{file.gsub('.hs', '')}")
+      )
+    end
+
+    content = File.read('./advent.cabal')
+
+    # Insert new module into cabal file
+    module_ = "#{dir}.#{file}".gsub('.hs', '')
+    unless content.include?(module_)
+      content.gsub!(/other-modules:\n/, "other-modules:\n        #{module_}\n")
+
+      File.open('./advent.cabal', 'w') do |f|
+        f.write(content)
+      end
+    end
+
+    # Insert new module into Main.hs
+    main = File.read('./app/Main.hs')
+    unless main.include?(module_)
+      main.gsub!(
+        "main :: IO ()",
+        <<-HASKELL
+          import #{module_} qualified
+
+          main :: IO ()
+        HASKELL
+      )
+      main.gsub!(/  , #{dir}.\d+/, "  , #{module_}")
+      main.gsub!(/  , #{dir}.\d+ as \w+/, "  , #{module_} as #{module_}")
+
+      File.open('./app/Main.hs', 'w') do |f|
+        f.write(main)
+      end
+    end
+  end
+else
+  puts "Must be in format YYYY-D+"
+  exit 1
+end
