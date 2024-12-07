@@ -75,6 +75,7 @@ executable advent
         Y2024.D6a
         Y2024.D7
         Y2024.D7a
+        Coordinate
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
