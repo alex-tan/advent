@@ -73,6 +73,8 @@ executable advent
         -- Y2023.D4a
         Y2024.D6
         Y2024.D6a
+        Y2024.D7
+        Y2024.D7a
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
