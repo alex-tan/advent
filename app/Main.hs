@@ -10,6 +10,8 @@ import Y2024.D6 qualified
 import Y2024.D6a qualified
 import Y2024.D7 qualified
 import Y2024.D7a qualified
+import Y2024.D8 qualified
+import Y2024.D8a qualified
 
 main :: IO ()
 main = do
@@ -21,3 +23,5 @@ main = do
   -- Y2024.D6a.run
   Y2024.D7a.run
   Y2018.D10.run
+  Y2024.D8.run
+  Y2024.D8a.run
