@@ -84,11 +84,11 @@ complete map' state =
       direction' = directionToAdjustment $ guardDirection state
       nextCoordinate' = adjustCoordinate direction' (coordinate state)
       alreadyVisited = Set.member (nextCoordinate', guardDirection next') $ visited state
-   in if (alreadyVisited)
+   in if alreadyVisited
         then
           True
         else
-          if (next' /= state)
+          if next' /= state
             then
               complete map' next'
             else

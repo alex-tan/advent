@@ -30,18 +30,7 @@ run = do
   let cells :: [[Cell]] = map parseLine $ lines content
 
   -- Iterate through each cell and create a coordinate map
-  let coords :: Map.Map Coordinate Cell =
-        foldl
-          ( \acc (y, row) ->
-              foldl
-                ( \acc' (x, cell) ->
-                    Map.insert (Coordinate x y) cell acc'
-                )
-                acc
-                (zip [0 ..] row)
-          )
-          Map.empty
-          (zip [0 ..] cells)
+  let coords = cellsToCoordMap cells
 
   let coordsList :: [Coordinate] = Map.keys coords
   let linesData' :: LinesData = linesData coordsList
@@ -56,8 +45,6 @@ run = do
           Map.empty
           (Map.toList coords)
 
-  -- for each cell identify lines
-  -- Set (Set Coordinate)
   let antinodes :: Set.Set Coordinate =
         Set.fromList $
           concatMap

@@ -2,12 +2,9 @@
 
 module Y2018.D10a (run) where
 
-import Control.Exception (throw)
 import Control.Monad (foldM)
-import Data.List (groupBy, intersperse)
-import Data.Set qualified as Set
-import Debug.Trace (trace)
-import Text.Pretty.Simple (pPrint)
+import Coordinate
+import Helpers
 import Text.RawString.QQ
 import Text.Regex.TDFA ((=~))
 
@@ -18,72 +15,11 @@ data Line
   }
   deriving (Show)
 
-(|>) :: a -> (a -> b) -> b
-x |> f = f x
-
-data LinesData
-  = LinesData
-  { minX :: Integer,
-    maxX :: Integer,
-    minY :: Integer,
-    maxY :: Integer
-  }
-  deriving (Show)
-
-linesData :: [Line] -> LinesData
-linesData lines' =
-  let positions =
-        lines'
-          |> map position
-      ys = map y positions
-      xs = map x positions
-   in LinesData
-        { minX = minimum xs,
-          maxX = maximum xs,
-          minY = minimum ys,
-          maxY = maximum ys
-        }
-
-drawLines :: [Line] -> [String]
-drawLines lines' =
-  let positions =
-        lines'
-          |> map position
-      linesData' = linesData lines'
-      coordinates :: Set.Set Coordinate =
-        positions
-          |> Set.fromList
-   in if abs (minY linesData' - maxY linesData') > 1000
-        then []
-        else
-          [minY linesData' .. maxY linesData']
-            |> map
-              ( \y ->
-                  [minX linesData' .. maxX linesData']
-                    |> map
-                      ( \x ->
-                          if Set.member (Coordinate x y) coordinates
-                            then
-                              '#'
-                            else
-                              ' '
-                      )
-              )
-
 adjustLine :: Line -> Line
 adjustLine line =
   line
     { position = addCoordinate (position line) (velocity line)
     }
-
-data Coordinate = Coordinate
-  { x :: Integer,
-    y :: Integer
-  }
-  deriving (Show, Ord, Eq)
-
-addCoordinate :: Coordinate -> Coordinate -> Coordinate
-addCoordinate (Coordinate x1 y1) (Coordinate x2 y2) = Coordinate (x1 + x2) (y1 + y2)
 
 data State
   = State
@@ -114,7 +50,7 @@ run =
         |> foldM
           ( \lines' i -> do
               let new = adjustLines lines'
-              let drawn = drawLines new
+              let drawn = drawCoordinates $ map position new
               if null drawn
                 then return new
                 else do

@@ -1,5 +1,6 @@
 module Coordinate where
 
+import Data.Map qualified as Map
 import Data.Set qualified as Set
 import Helpers
 
@@ -111,3 +112,17 @@ drawCoordinates positions =
                               ' '
                       )
               )
+
+cellsToCoordMap :: [[a]] -> Map.Map Coordinate a
+cellsToCoordMap cells =
+  foldl
+    ( \acc (y, row) ->
+        foldl
+          ( \acc' (x, cell) ->
+              Map.insert (Coordinate x y) cell acc'
+          )
+          acc
+          (zip [0 ..] row)
+    )
+    Map.empty
+    (zip [0 ..] cells)

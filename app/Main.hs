@@ -21,7 +21,7 @@ main = do
   -- Y2015.D2a.run
   -- Y2024.D6.run
   -- Y2024.D6a.run
-  Y2024.D7a.run
-  Y2018.D10.run
+  -- Y2024.D7a.run
+  -- Y2018.D10.run
   Y2024.D8.run
   Y2024.D8a.run
