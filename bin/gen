@@ -5,14 +5,19 @@ format = ARGV[0]
 
 case format
 when /(\d{4})-(\d+)/
-  dir = "Y#{$1}"
-  file1 = "D#{$2}.hs"
-  file2 = "D#{$2}a.hs"
+  year_dir = "Y#{$1}"
 
-  dir_name = File.join('./app', dir)
+  dir_name = File.join('./app', year_dir)
   Dir.mkdir(dir_name) unless Dir.exist?(dir_name)
 
-  [file1, file2].each do |file|
+  haskell_module_1 = "D#{$2}"
+  haskell_module_2 = "D#{$2}a"
+  haskell_file_1 = "#{haskell_module_1}.hs"
+  haskell_file_2 = "#{haskell_module_2}.hs"
+  txt_path = File.join(dir_name, "D#{$2}.txt")
+
+  [haskell_module_1, haskell_module_2].each do |module_|
+    file = "#{module_}.hs"
     path = File.join(dir_name, file)
     if File.exist?(path)
       puts "#{path} already exists"
@@ -23,17 +28,17 @@ when /(\d{4})-(\d+)/
     File.open(path, 'w') do |f|
       f.write(
         template
-        .gsub("readFile \"\"", "readFile \"#{file}\"")
-        .gsub("module Y2024.D7", "module #{dir}.#{file.gsub('.hs', '')}")
+        .gsub("readFile \"\"", "readFile \"#{txt_path}\"")
+        .gsub("module #{year_dir}.#{module_}", "module #{year_dir}.#{module_}")
       )
     end
 
     content = File.read('./advent.cabal')
 
     # Insert new module into cabal file
-    module_ = "#{dir}.#{file}".gsub('.hs', '')
-    unless content.include?(module_)
-      content.gsub!(/other-modules:\n/, "other-modules:\n        #{module_}\n")
+    full_module_ = "#{year_dir}.#{module_}"
+    unless content.include?(full_module_)
+      content.gsub!(/other-modules:\n/, "other-modules:\n        #{full_module_}\n")
 
       File.open('./advent.cabal', 'w') do |f|
         f.write(content)
@@ -42,17 +47,17 @@ when /(\d{4})-(\d+)/
 
     # Insert new module into Main.hs
     main = File.read('./app/Main.hs')
-    unless main.include?(module_)
+    unless main.include?(full_module_)
       main.gsub!(
         "main :: IO ()",
         <<~HASKELL
-          import #{module_} qualified
+          import #{full_module_} qualified
 
           main :: IO ()
         HASKELL
       )
-      main.gsub!(/  , #{dir}.\d+/, "  , #{module_}")
-      main.gsub!(/  , #{dir}.\d+ as \w+/, "  , #{module_} as #{module_}")
+      main.gsub!(/  , #{year_dir}.\d+/, "  , #{full_module_}")
+      main.gsub!(/  , #{year_dir}.\d+ as \w+/, "  , #{full_module_} qualified")
 
       File.open('./app/Main.hs', 'w') do |f|
         f.write(main)
