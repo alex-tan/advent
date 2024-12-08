@@ -6,6 +6,8 @@ import Y2015.D2 qualified
 import Y2015.D2a qualified
 import Y2018.D10 qualified
 import Y2018.D10a qualified
+import Y2023.D16 qualified
+import Y2023.D16a qualified
 import Y2023.D4a qualified
 import Y2024.D6 qualified
 import Y2024.D6a qualified
@@ -26,4 +28,4 @@ main = do
   -- Y2018.D10.run
   -- Y2024.D8.run
   -- Y2024.D8a.run
-  Y2023.D4a.run
+  Y2023.D16a.run

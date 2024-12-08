@@ -19,30 +19,6 @@ data LinesData
   }
   deriving (Show)
 
-data Direction
-  = North
-  | NorthEast
-  | NorthWest
-  | South
-  | SouthEast
-  | SouthWest
-  | East
-  | West
-  deriving (Show, Eq, Ord, Bounded, Enum)
-
-allDirections :: [Direction]
-allDirections = [minBound .. maxBound]
-
-directionToAdjustment :: Direction -> Coordinate
-directionToAdjustment North = Coordinate 0 (-1)
-directionToAdjustment South = Coordinate 0 1
-directionToAdjustment East = Coordinate 0 1
-directionToAdjustment West = Coordinate 0 (-1)
-directionToAdjustment NorthEast = Coordinate 1 (-1)
-directionToAdjustment NorthWest = Coordinate (-1) (-1)
-directionToAdjustment SouthEast = Coordinate 1 1
-directionToAdjustment SouthWest = Coordinate (-1) 1
-
 multCoordinate :: Coordinate -> Coordinate -> Coordinate
 multCoordinate (Coordinate x1 y1) (Coordinate x2 y2) = Coordinate (x1 * x2) (y1 * y2)
 

@@ -63,6 +63,8 @@ executable advent
 
     -- Modules included in this executable, other than Main.
     other-modules:
+        Y2023.D16a
+        Y2023.D16
         Y2024.D8a
         Y2024.D8
         Y2018.D10a
@@ -81,6 +83,8 @@ executable advent
         Y2024.D7a
         Coordinate
         Helpers
+        Direction4
+        Direction8
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -95,7 +99,8 @@ executable advent
         raw-strings-qq,
         hashmap,
         vector,
-        split
+        split,
+        parallel
 
     -- Directories containing source files.
     hs-source-dirs:   app
@@ -103,4 +108,5 @@ executable advent
     -- Base language which the package is written in.
     default-language: GHC2021
     default-extensions:
-        RecordWildCards
+        RecordWildCards,
+        QuasiQuotes
