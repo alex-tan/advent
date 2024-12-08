@@ -2,12 +2,8 @@
 
 module Y2018.D10 (run) where
 
-import Control.Exception (throw)
 import Control.Monad (foldM)
-import Data.List (groupBy, intersperse)
 import Data.Set qualified as Set
-import Debug.Trace (trace)
-import Text.Pretty.Simple (pPrint)
 import Text.RawString.QQ
 import Text.Regex.TDFA ((=~))
 

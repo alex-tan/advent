@@ -3,15 +3,9 @@
 module Y2024.D6 (run) where
 
 import Data.List (elemIndex)
-import Data.Map as Map (Map, fromList, lookup)
-import Data.Maybe (fromMaybe, mapMaybe)
-import Data.Set as Set (Set, fromList, insert, intersection, size, toList)
-import Debug.Trace (trace, traceShow)
-import GHC.Desugar ((>>>))
-import System.Posix.Internals (statGetType)
+import Data.Maybe (mapMaybe)
+import Data.Set as Set (Set, fromList, insert, size)
 import Text.Pretty.Simple (pPrint)
-import Text.RawString.QQ
-import Text.Regex.TDFA ((=~))
 
 data Line
   = Guard

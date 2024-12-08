@@ -5,7 +5,6 @@ module Y2023.D4a (run) where
 import Data.Map qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Set as Set (Set, fromList, intersection)
-import Debug.Trace (traceShow, traceShowId)
 import Text.Pretty.Simple (pPrint)
 import Text.RawString.QQ
 import Text.Regex.TDFA ((=~))
@@ -61,7 +60,7 @@ run = do
                     (\dict' cardWon -> Map.insertWith (+) cardWon totalCardCount dict')
                     (Map.insertWith (+) cardNumber 1 cardsWon) -- Add in 1 for the current card
                     -- For each card won, you get totalCount copies.
-                    (traceShowId [(cardNumber + 1) .. (cardNumber + score')])
+                    [(cardNumber + 1) .. (cardNumber + score')]
           )
           Map.empty
           lines'

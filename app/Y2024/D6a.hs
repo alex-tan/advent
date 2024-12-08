@@ -4,7 +4,6 @@ import Data.List (elemIndex)
 import Data.Maybe (mapMaybe)
 import Data.Set as Set (Set, filter, fromList, insert, member)
 import Data.Vector as Vector (Vector, fromList, length, toList, (!), (//))
-import Debug.Trace (trace)
 import Text.Pretty.Simple (pPrint)
 
 data Line
