@@ -1,5 +1,3 @@
-{-# LANGUAGE QuasiQuotes #-}
-
 module Y2024.D6 (run) where
 
 import Data.List (elemIndex)

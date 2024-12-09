@@ -1,5 +1,3 @@
-{-# LANGUAGE QuasiQuotes #-}
-
 module Y2023.D4a (run) where
 
 import Data.Map qualified as Map

@@ -1,5 +1,3 @@
-{-# LANGUAGE QuasiQuotes #-}
-
 module Y2018.D10a (run) where
 
 import Control.Monad (foldM)

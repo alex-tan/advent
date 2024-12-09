@@ -1,5 +1,3 @@
-{-# LANGUAGE QuasiQuotes #-}
-
 module Y2015.D3a (run) where
 
 import Control.Exception (throw)

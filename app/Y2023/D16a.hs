@@ -1,20 +1,14 @@
-{-# LANGUAGE QuasiQuotes #-}
-
 module Y2023.D16a (run) where
 
-import Control.Concurrent.Async (mapConcurrently)
 import Control.Exception (throw)
-import Control.Parallel.Strategies (parList, parMap, rpar, rseq, using)
+import Control.Parallel.Strategies (parMap, rpar)
 import Coordinate
-import Data.List (intersperse)
 import Data.Map qualified as Map
 import Data.Set qualified as Set
-import Debug.Trace (trace, traceShowId)
+import Debug.Trace (traceShowId)
 import Direction4
 import Helpers
 import Text.Pretty.Simple (pPrint)
-import Text.RawString.QQ
-import Text.Regex.TDFA ((=~))
 
 data State
   = State

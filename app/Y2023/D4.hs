@@ -1,5 +1,3 @@
-{-# LANGUAGE QuasiQuotes #-}
-
 module Y2023.D4 (main) where
 
 import Data.Set as Set (Set, fromList, intersection)
