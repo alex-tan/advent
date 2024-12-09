@@ -2,7 +2,6 @@ module Y2024.D7a (run) where
 
 import Control.Exception (throw)
 import Data.List (intersperse)
-import Debug.Trace (trace)
 import Text.Pretty.Simple (pPrint)
 import Text.RawString.QQ
 import Text.Regex.TDFA ((=~))
@@ -46,9 +45,7 @@ canEvaluate line =
       allCombinations :: [[Processed]] = generateCombinations parsedList
       match =
         any
-          ( \combo ->
-              let m = (== testValue line) . evaluateParsed $ combo
-               in if m then trace (show combo ++ " " ++ show (testValue line)) m else False
+          ( (== testValue line) . evaluateParsed
           )
           allCombinations
    in match
@@ -62,6 +59,7 @@ evalHelper acc [] = acc -- Base case: return the accumulated result
 evalHelper acc (ProcessedOperator op : ProcessedInt n : rest) =
   let newAcc = applyOperator op acc n
    in evalHelper newAcc rest
+evalHelper _ _ = throw $ userError "Invalid input"
 
 -- Apply an operator to two integers
 applyOperator :: Operator -> Integer -> Integer -> Integer
@@ -88,5 +86,3 @@ run = do
   content <- readFile "./app/Y2024/7.txt"
   let lines' :: [Line] = map parseLine . lines $ content
   pPrint $ sum $ map testValue $ filter canEvaluate lines'
-
--- 2014958179 wrong
