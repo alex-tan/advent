@@ -21,6 +21,8 @@ import Y2024.D7 qualified
 import Y2024.D7a qualified
 import Y2024.D8 qualified
 import Y2024.D8a qualified
+import Y2024.D9 qualified
+import Y2024.D9a qualified
 
 data Options = Options
   { year :: Integer,
@@ -63,4 +65,6 @@ run Options {year, day} =
     (2024, "D7a") -> Y2024.D7a.run
     (2024, "D8") -> Y2024.D8.run
     (2024, "D8a") -> Y2024.D8a.run
+    (2024, "D9") -> Y2024.D9.run
+    (2024, "D9a") -> Y2024.D9a.run
     _ -> throw $ userError "Not implemented"
