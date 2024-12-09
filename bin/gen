@@ -12,7 +12,7 @@ when /(\d{4})-(\d+)/
 
   haskell_module_1 = "D#{$2}"
   haskell_module_2 = "D#{$2}a"
-  txt_path = File.join(dir_name, "D#{$2}.txt")
+  txt_path = File.join(dir_name, "#{$2}.txt")
 
   [haskell_module_1, haskell_module_2].each do |module_|
     file = "#{module_}.hs"
@@ -28,12 +28,14 @@ when /(\d{4})-(\d+)/
 
       module #{year_dir}.#{module_} (run) where
 
+      import Coordinate
       import Control.Exception (throw)
       import Data.List (intersperse)
       import Debug.Trace (trace)
       import Text.Pretty.Simple (pPrint)
       import Text.RawString.QQ
       import Text.Regex.TDFA ((=~))
+      import Data.Set qualified as Set
 
       data Line
         = Line
@@ -57,7 +59,7 @@ when /(\d{4})-(\d+)/
       run = do
         content <- readFile "#{txt_path}"
         let lines' :: [Line] = map parseLine . lines $ content
-        pPrint $ lines'
+        pPrint lines'
 
     HASKELL
 
