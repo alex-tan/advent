@@ -12,8 +12,6 @@ when /(\d{4})-(\d+)/
 
   haskell_module_1 = "D#{$2}"
   haskell_module_2 = "D#{$2}a"
-  haskell_file_1 = "#{haskell_module_1}.hs"
-  haskell_file_2 = "#{haskell_module_2}.hs"
   txt_path = File.join(dir_name, "D#{$2}.txt")
 
   [haskell_module_1, haskell_module_2].each do |module_|
@@ -24,13 +22,47 @@ when /(\d{4})-(\d+)/
       next
     end
 
-    template = File.read(File.join('./bin', 'Template.hs'))
+    template =
+    <<~HASKELL
+      {-# LANGUAGE QuasiQuotes #-}
+
+      module #{year_dir}.#{module_} (run) where
+
+      import Control.Exception (throw)
+      import Data.List (intersperse)
+      import Debug.Trace (trace)
+      import Text.Pretty.Simple (pPrint)
+      import Text.RawString.QQ
+      import Text.Regex.TDFA ((=~))
+
+      data Line
+        = Line
+        {}
+        deriving (Show)
+
+      data State
+        = State
+        {}
+        deriving (Show, Eq, Ord)
+
+      parseLine :: String -> Line
+      parseLine line =
+        let regex = [r|([0-9]+): *(.+)|] :: String
+            (_, _, _, [testNumber, numbers]) = line =~ regex :: (String, String, String, [String])
+        in Line
+              {
+              }
+
+      run :: IO ()
+      run = do
+        content <- readFile "#{txt_path}"
+        let lines' :: [Line] = map parseLine . lines $ content
+        pPrint $ lines'
+
+    HASKELL
+
     File.open(path, 'w') do |f|
-      f.write(
-        template
-        .gsub("readFile \"\"", "readFile \"#{txt_path}\"")
-        .gsub("module Y2024.D7", "module #{year_dir}.#{module_}")
-      )
+      f.write(template)
     end
 
     content = File.read('./advent.cabal')
