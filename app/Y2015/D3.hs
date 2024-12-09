@@ -4,13 +4,9 @@ module Y2015.D3 (run) where
 
 import Control.Exception (throw)
 import Coordinate
-import Data.List (intersperse)
 import Data.Set qualified as Set
-import Debug.Trace (trace)
 import Direction4
 import Text.Pretty.Simple (pPrint)
-import Text.RawString.QQ
-import Text.Regex.TDFA ((=~))
 
 parseChar :: Char -> Direction4
 parseChar '>' = East

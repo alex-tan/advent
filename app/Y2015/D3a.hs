@@ -4,13 +4,9 @@ module Y2015.D3a (run) where
 
 import Control.Exception (throw)
 import Coordinate qualified
-import Data.List (intersperse)
 import Data.Set qualified as Set
-import Debug.Trace (trace)
 import Direction4 qualified
 import Text.Pretty.Simple (pPrint)
-import Text.RawString.QQ
-import Text.Regex.TDFA ((=~))
 
 parseChar :: Char -> Direction4.Direction4
 parseChar '>' = Direction4.East
@@ -55,5 +51,3 @@ run = do
             }
           (zip directions [1 ..])
   pPrint $ Set.size $ visited state
-
--- 4161 too high
