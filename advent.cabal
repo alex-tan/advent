@@ -52,7 +52,7 @@ extra-doc-files:    CHANGELOG.md
 -- extra-source-files:
 
 common warnings
-    ghc-options: -Wall
+    ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
 
 executable advent
     -- Import common warning flags.
@@ -100,7 +100,8 @@ executable advent
         hashmap,
         vector,
         split,
-        parallel
+        parallel,
+        async
 
     -- Directories containing source files.
     hs-source-dirs:   app

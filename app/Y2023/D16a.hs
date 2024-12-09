@@ -2,8 +2,9 @@
 
 module Y2023.D16a (run) where
 
+import Control.Concurrent.Async (mapConcurrently)
 import Control.Exception (throw)
-import Control.Parallel.Strategies (parList, rseq, using)
+import Control.Parallel.Strategies (parList, parMap, rpar, rseq, using)
 import Coordinate
 import Data.List (intersperse)
 import Data.Map qualified as Map
@@ -104,7 +105,7 @@ run = do
   let map' = cellsToCoordMap lines'
   let linesData' = traceShowId $ linesData $ Map.keys map'
 
-  let startingEdges =
+  let initial =
         [ (Coordinate {x = x, y = y}, direction)
           | x <- [minX linesData' .. maxX linesData'],
             y <- [minY linesData' .. maxY linesData'],
@@ -118,16 +119,17 @@ run = do
                     energizedTiles = Set.fromList [(coord, direction)]
                   }
             )
-          |> filter (not . null . beams . next map' linesData')
           |> traceShowId
+
+  let startingEdges = parMap rpar (next map' linesData') initial
+  let z =
+        startingEdges
           |> map
             ( \s ->
-                next map' linesData' s
+                s
                   |> energizedTiles
                   |> Set.map fst
                   |> Set.size
                   |> traceShowId
             )
-  pPrint $ maximum startingEdges
-
--- 7211 too low
+  pPrint $ maximum z
