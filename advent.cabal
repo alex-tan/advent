@@ -103,7 +103,8 @@ executable advent
         vector,
         split,
         parallel,
-        async
+        async,
+        optparse-applicative
 
     -- Directories containing source files.
     hs-source-dirs:   app
