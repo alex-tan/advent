@@ -10,6 +10,9 @@ data Coordinate = Coordinate
   }
   deriving (Show, Ord, Eq)
 
+empty :: Coordinate
+empty = Coordinate 0 0
+
 data LinesData
   = LinesData
   { minX :: Integer,

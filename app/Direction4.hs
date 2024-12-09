@@ -9,6 +9,12 @@ data Direction4
   | West
   deriving (Show, Eq, Ord, Bounded, Enum)
 
+reverse :: Direction4 -> Direction4
+reverse North = South
+reverse South = North
+reverse East = West
+reverse West = East
+
 allDirections :: [Direction4]
 allDirections = [minBound .. maxBound]
 
