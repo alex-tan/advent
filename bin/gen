@@ -24,8 +24,6 @@ when /(\d{4})-(\d+)/
 
     template =
     <<~HASKELL
-      {-# LANGUAGE QuasiQuotes #-}
-
       module #{year_dir}.#{module_} (run) where
 
       import Coordinate

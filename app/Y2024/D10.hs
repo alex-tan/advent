@@ -1,7 +1,4 @@
-{-# LANGUAGE QuasiQuotes #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-
-{-# HLINT ignore "Use tuple-section" #-}
 
 module Y2024.D10 (run) where
 
@@ -86,7 +83,7 @@ nextStep map' i coord =
               let val = mapGetCoordinate map' c
                in if val == Just i
                     then
-                      fmap (\v -> (c, v)) val
+                      fmap (c,) val
                     else
                       Nothing
           )

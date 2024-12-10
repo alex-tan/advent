@@ -117,4 +117,5 @@ executable advent
     default-language: GHC2021
     default-extensions:
         RecordWildCards,
-        QuasiQuotes
+        QuasiQuotes,
+        TupleSections
