@@ -50,24 +50,6 @@ parseLine line =
         (0 :: Integer, [])
         (zip [0 ..] line)
 
-expand :: Cell -> [Cell]
-expand cell =
-  case cell of
-    File i n -> replicate (fromIntegral n) cell
-    FreeSpace n -> replicate (fromIntegral n) cell
-
-toStr :: Cell -> Integer
-toStr cell =
-  case cell of
-    File i n -> n
-    FreeSpace n -> n
-
-toId :: Cell -> String
-toId cell =
-  case cell of
-    File i n -> concat $ replicate (fromInteger n) $ show i
-    FreeSpace n -> replicate (fromInteger n) '.'
-
 replicateCell :: Cell -> [Cell]
 replicateCell cell =
   case cell of
@@ -134,7 +116,3 @@ run = do
           rearranged
   pPrint $ sum d
   return ()
-
--- 85734297767 too low
--- real: 00...111...2...333.44.5555.6666.777.888899
--- mine: 00...111...2...333.44.5555.6666.777.888899

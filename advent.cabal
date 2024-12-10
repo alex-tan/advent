@@ -63,6 +63,8 @@ executable advent
 
     -- Modules included in this executable, other than Main.
     other-modules:
+        Y2024.D10a
+        Y2024.D10
         Y2024.D9a
         Y2024.D9
         Y2015.D3a

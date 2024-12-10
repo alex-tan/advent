@@ -105,3 +105,23 @@ cellsToCoordMap cells =
     )
     Map.empty
     (zip [0 ..] cells)
+
+data Map a = Map
+  { cells :: [[a]],
+    coordinateToCell :: Map.Map Coordinate a,
+    bounds :: LinesData
+  }
+
+mapFromCells :: [[a]] -> Map a
+mapFromCells cells' =
+  Map
+    { cells = cells',
+      coordinateToCell = cellsToCoordMap cells',
+      bounds = linesData $ Map.keys $ cellsToCoordMap cells'
+    }
+
+inMapBounds :: Map a -> Coordinate -> Bool
+inMapBounds map' = inBounds (bounds map')
+
+mapGetCoordinate :: Map a -> Coordinate -> Maybe a
+mapGetCoordinate map' coord' = Map.lookup coord' (coordinateToCell map')

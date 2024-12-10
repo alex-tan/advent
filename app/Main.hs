@@ -15,6 +15,8 @@ import Y2018.D10a qualified
 import Y2023.D16 qualified
 import Y2023.D16a qualified
 import Y2023.D4a qualified
+import Y2024.D10 qualified
+import Y2024.D10a qualified
 import Y2024.D6 qualified
 import Y2024.D6a qualified
 import Y2024.D7 qualified
@@ -67,4 +69,6 @@ run Options {year, day} =
     (2024, "D8a") -> Y2024.D8a.run
     (2024, "D9") -> Y2024.D9.run
     (2024, "D9a") -> Y2024.D9a.run
-    _ -> throw $ userError "Not implemented"
+    (2024, "D10") -> Y2024.D10.run
+    (2024, "D10a") -> Y2024.D10a.run
+    _ -> throw $ userError "Not handled in main"
