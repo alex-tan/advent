@@ -63,6 +63,8 @@ executable advent
 
     -- Modules included in this executable, other than Main.
     other-modules:
+        Y2024.D11a
+        Y2024.D11
         Y2024.D10a
         Y2024.D10
         Y2024.D9a
@@ -108,7 +110,8 @@ executable advent
         split,
         parallel,
         async,
-        optparse-applicative
+        optparse-applicative,
+        dlist
 
     -- Directories containing source files.
     hs-source-dirs:   app

@@ -26,3 +26,7 @@ directionToAdjustment West = Coordinate {x = -1, y = 0}
 
 addDirection :: Coordinate -> Direction4 -> Coordinate
 addDirection coord dir = addCoordinate coord (directionToAdjustment dir)
+
+addDirections :: Coordinate -> [Coordinate]
+addDirections coord =
+  map (addDirection coord) allDirections
