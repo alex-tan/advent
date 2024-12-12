@@ -3,9 +3,10 @@ module Region where
 import Coordinate
 import Data.List qualified as List
 import Data.Map qualified as Map
+import Data.Maybe qualified as Maybe
 import Data.Set qualified as Set
 import Debug.Trace (traceShowId)
-import Direction4 (addDirections)
+import Direction4 (Direction4 (..), addDirection, addDirections, allDirections, coordAdjacency)
 import Helpers
 import Test.HUnit
 
@@ -43,13 +44,11 @@ tests =
           TestCase $ assertEqual "price" 12 (price region1),
           TestCase $ assertEqual "region2 area" 3 (area region2),
           TestCase $ assertEqual "region2 perimeter" 8 (perimeter region2),
-          TestCase $ assertEqual "region3 perimeter" 16 (perimeter region3)
-          -- TestList $
-          --   map
-          --     ( \region ->
-          --         TestCase $ assertEqual "price" 9 (price region)
-          --     )
-          --     [region0, region1, region2]
+          TestCase $ assertEqual "region3 perimeter" 16 (perimeter region3),
+          TestCase $ assertEqual "shareBorder" True (shareBorder (North, Coordinate 0 0) (North, Coordinate 0 1)),
+          TestCase $ assertEqual "shareBorder 2" True (shareBorder (South, Coordinate 0 0) (South, Coordinate 0 1)),
+          TestCase $ assertEqual "shareBorder 3" False (shareBorder (West, Coordinate 0 0) (West, Coordinate 0 1)),
+          TestCase $ assertEqual "shareBorder 4" False (shareBorder (East, Coordinate 0 0) (East, Coordinate 0 1))
         ]
 
 insert :: Coordinate -> Region -> Region
@@ -77,6 +76,61 @@ perimeter Region {coords} =
 
 price :: Region -> Int
 price a = area a * perimeter a
+
+priceA :: Region -> Int
+priceA a = sides a * area a
+
+sides :: Region -> Int
+sides Region {coords} =
+  let start :: [(Direction4, Coordinate)] =
+        coords
+          |> Set.toList
+          |> concatMap
+            ( \coord ->
+                allDirections
+                  |> Maybe.mapMaybe
+                    ( \dir ->
+                        let coord' = addDirection coord dir
+                         in if Set.notMember coord' coords
+                              then
+                                Just (dir, coord')
+                              else
+                                Nothing
+                    )
+            )
+   in start
+        |> foldl
+          ( \acc item ->
+              if any (any (shareBorder item)) acc
+                then
+                  acc
+                    |> map
+                      ( \(group :: [(Direction4, Coordinate)]) ->
+                          if any (shareBorder item) group
+                            then
+                              item : group
+                            else
+                              group
+                      )
+                else [item] : acc
+          )
+          ([] :: [[(Direction4, Coordinate)]])
+        |> length
+
+shareBorder :: (Direction4, Coordinate) -> (Direction4, Coordinate) -> Bool
+shareBorder (dirA, coordA) (dirB, coordB)
+  | dirA /= dirB = False
+  | otherwise =
+      case (coordAdjacency coordA coordB, dirA) of
+        (Just West, North) -> True
+        (Just West, South) -> True
+        (Just East, South) -> True
+        (Just East, North) -> True
+        (Just North, East) -> True
+        (Just North, West) -> True
+        (Just South, West) -> True
+        (Just South, East) -> True
+        _ -> False
 
 init :: Char -> Coordinate -> Region
 init c coord = Region {c = c, coords = Set.singleton coord}

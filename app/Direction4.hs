@@ -30,3 +30,14 @@ addDirection coord dir = addCoordinate coord (directionToAdjustment dir)
 addDirections :: Coordinate -> [Coordinate]
 addDirections coord =
   map (addDirection coord) allDirections
+
+coordAdjacency :: Coordinate -> Coordinate -> Maybe Direction4
+coordAdjacency Coordinate {x = x1, y = y1} Coordinate {x = x2, y = y2} =
+  let xOff = (x1 - x2)
+      yOff = (y1 - y2)
+   in case (xOff, yOff) of
+        (1, 0) -> Just East
+        (-1, 0) -> Just West
+        (0, 1) -> Just South
+        (0, -1) -> Just North
+        _ -> Nothing
