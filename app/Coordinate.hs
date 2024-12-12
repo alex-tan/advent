@@ -5,8 +5,8 @@ import Data.Set qualified as Set
 import Helpers
 
 data Coordinate = Coordinate
-  { x :: Integer,
-    y :: Integer
+  { y :: Integer,
+    x :: Integer
   }
   deriving (Show, Ord, Eq)
 
@@ -21,6 +21,10 @@ data LinesData
     maxY :: Integer
   }
   deriving (Show)
+
+coordAdjacentTo :: Coordinate -> Coordinate -> Bool
+coordAdjacentTo Coordinate {x = x1, y = y1} Coordinate {x = x2, y = y2} =
+  abs (x1 - x2) <= 1 && abs (y1 - y2) <= 1
 
 multCoordinate :: Coordinate -> Coordinate -> Coordinate
 multCoordinate (Coordinate x1 y1) (Coordinate x2 y2) = Coordinate (x1 * x2) (y1 * y2)

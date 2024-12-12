@@ -15,8 +15,8 @@
 #
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
 
-executable = Dir['./*.rb'].sort.last
+day = Dir['app/**/*.hs'].sort.last.split('/').last.split('.').first
 
-guard 'process', name: 'AdventOfCode', :command => "ruby #{executable}" do
-  Dir['./*.rb'].each { watch(_1) }
+guard 'process', name: 'AdventOfCode', :command => "cabal run 2024 #{day}" do
+  Dir['app/**/*.hs'].each { watch(_1) }
 end
