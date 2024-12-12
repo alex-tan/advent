@@ -24,7 +24,11 @@ data LinesData
 
 coordAdjacentTo :: Coordinate -> Coordinate -> Bool
 coordAdjacentTo Coordinate {x = x1, y = y1} Coordinate {x = x2, y = y2} =
-  abs (x1 - x2) <= 1 && abs (y1 - y2) <= 1
+  let
+    xOff = abs (x1 - x2)
+    yOff = abs (y1 - y2)
+  in
+    xOff <= 1 && yOff <= 1 && xOff /= yOff
 
 multCoordinate :: Coordinate -> Coordinate -> Coordinate
 multCoordinate (Coordinate x1 y1) (Coordinate x2 y2) = Coordinate (x1 * x2) (y1 * y2)

@@ -114,7 +114,8 @@ executable advent
         parallel,
         async,
         optparse-applicative,
-        dlist
+        dlist,
+        HUnit
 
     -- Directories containing source files.
     hs-source-dirs:   app
