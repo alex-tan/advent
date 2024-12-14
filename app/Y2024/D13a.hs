@@ -4,7 +4,7 @@ import Control.Exception (throw)
 import Coordinate
 import Data.Function (on)
 import Data.HashMap (mapMaybe)
-import Data.List (intersperse, minimumBy)
+import Data.List (group, intersperse, minimumBy)
 import Data.List.Split (splitOn)
 import Data.Maybe qualified
 import Data.Set qualified as Set
@@ -34,45 +34,30 @@ aCost = 3
 bCost :: Integer
 bCost = 1
 
-pressesToCoordinateAndCost :: Group -> (Integer, Integer) -> (Coordinate, Integer)
-pressesToCoordinateAndCost Group {buttonAXPlus, buttonAYPlus, buttonBXPlus, buttonBYPlus} (aPresses, bPresses) =
-  ( Coordinate
-      { x = (aPresses * buttonAXPlus) + (bPresses * buttonBXPlus),
-        y = (aPresses * buttonAYPlus) + (bPresses * buttonBYPlus)
-      },
-    aPresses * aCost + bPresses * bCost
-  )
-
-combos :: Group -> [(Integer, Integer)]
-combos Group {buttonAXPlus, buttonAYPlus, buttonBXPlus, buttonBYPlus, prize} =
-  let Coordinate {x = prizeX, y = prizeY} = prize
-      aXMax = prizeX `div` buttonAXPlus
-      bXMax = prizeX `div` buttonBXPlus
-      aYMax = prizeY `div` buttonAYPlus
-      bYMax = prizeY `div` buttonBYPlus
-      aMax = min aXMax aYMax
-      bMax = min bXMax bYMax
-   in [(a, b) | a <- [0 .. aMax], b <- [0 .. bMax]]
+pressesToCost :: (Integer, Integer) -> Integer
+pressesToCost (aPresses, bPresses) =
+  aPresses * aCost + bPresses * bCost
 
 minCost :: Group -> Integer
-minCost group@Group {prize} =
-  let aBCombos :: [(Integer, Integer)] = combos group
-      !z = traceShowId group
-      combos' =
-        aBCombos
-          |> Data.Maybe.mapMaybe
-            ( \combo' ->
-                let pair = pressesToCoordinateAndCost group combo'
-                    (coord, cost) = pair
-                 in if coord == prize then Just (combo', cost) else Nothing
-            )
-      combo =
-        combos'
-          |> minimumBy (compare `on` snd)
-   in if null combos'
+minCost group@Group {buttonAXPlus, buttonAYPlus, buttonBXPlus, buttonBYPlus} =
+  let a1 = buttonAXPlus
+      b1 = buttonBXPlus
+      c1 = x (prize group)
+      a2 = buttonAYPlus
+      b2 = buttonBYPlus
+      c2 = y (prize group)
+      det = a1 * b2 - a2 * b1
+   in if det == 0
         then 0
         else
-          snd combo
+          let detA = c1 * b2 - c2 * b1
+              detB = a1 * c2 - a2 * c1
+           in if detA `mod` det /= 0 || detB `mod` det /= 0
+                then 0
+                else
+                  let a = detA `div` det
+                      b = detB `div` det
+                   in pressesToCost (a, b)
 
 parseLine :: String -> Group
 parseLine line =
@@ -89,7 +74,7 @@ parseLine line =
               buttonAYPlus = read aYPlus,
               buttonBXPlus = read bXPlus,
               buttonBYPlus = read bYPlus,
-              prize = Coordinate {x = read prizeX, y = read prizeY}
+              prize = Coordinate {x = read prizeX + 10000000000000, y = read prizeY + 10000000000000}
             }
         _ ->
           throw $ userError $ "parseLine: " ++ line
