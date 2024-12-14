@@ -98,6 +98,25 @@ drawCoordinates positions =
                       )
               )
 
+drawCoordinates' :: Integer -> Integer -> [Coordinate] -> [String]
+drawCoordinates' maxY maxX positions =
+  let coordinates :: Set.Set Coordinate =
+        positions
+          |> Set.fromList
+   in [0 .. maxY]
+        |> map
+          ( \y ->
+              [0 .. maxX]
+                |> map
+                  ( \x ->
+                      if Set.member (Coordinate x y) coordinates
+                        then
+                          '#'
+                        else
+                          ' '
+                  )
+          )
+
 cellsToCoordMap :: [[a]] -> Map.Map Coordinate a
 cellsToCoordMap cells =
   foldl
