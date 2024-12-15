@@ -118,6 +118,3 @@ nextLine line@Line {coordinate, velocity} =
           line
             { coordinate = naiveCoord
             }
-
--- 1042 too low
--- 3706 too low

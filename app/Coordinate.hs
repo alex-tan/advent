@@ -1,6 +1,7 @@
 module Coordinate where
 
 import Data.Map qualified as Map
+import Data.Maybe (fromJust)
 import Data.Set qualified as Set
 import Helpers
 
@@ -123,7 +124,7 @@ cellsToCoordMap cells =
     ( \acc (y, row) ->
         foldl
           ( \acc' (x, cell) ->
-              Map.insert (Coordinate x y) cell acc'
+              Map.insert (Coordinate {y = y, x = x}) cell acc'
           )
           acc
           (zip [0 ..] row)
@@ -136,6 +137,29 @@ data Map a = Map
     coordinateToCell :: Map.Map Coordinate a,
     bounds :: LinesData
   }
+  deriving (Show)
+
+instance (Eq (a)) => Eq (Map a) where
+  (==) a b = cells a == cells b
+
+coordinateYX :: Integer -> Integer -> Coordinate
+coordinateYX y x = Coordinate {y = y, x = x}
+
+coordinateXY :: Integer -> Integer -> Coordinate
+coordinateXY x y = Coordinate {y = y, x = x}
+
+mapToCells :: Map.Map Coordinate a -> [[a]]
+mapToCells coordMap =
+  let linesData' = linesData $ Map.keys coordMap
+   in [minY linesData' .. maxY linesData']
+        |> map
+          ( \y ->
+              [minX linesData' .. maxX linesData']
+                |> map
+                  ( \x ->
+                      fromJust $ Map.lookup (Coordinate {x = x, y = y}) coordMap
+                  )
+          )
 
 mapFromCells :: [[a]] -> Map a
 mapFromCells cells' =
