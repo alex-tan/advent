@@ -7,20 +7,15 @@ import Control.Exception (throw)
 import Control.Monad (foldM)
 import Coordinate
 import Data.Function (on)
-import Data.List (find, findIndex, groupBy, intersperse, minimumBy, nubBy)
+import Data.List (find, groupBy, minimumBy)
 import Data.List.Split (splitOn)
 import Data.Map qualified
 import Data.Map qualified as Map
 import Data.Maybe (fromJust, fromMaybe)
-import Data.Set qualified as Set
-import Data.Vector (uniq)
-import Debug.Trace (trace, traceShow, traceShowId)
 import Direction4
 import Helpers ((|>))
 import Test.HUnit
 import Text.Pretty.Simple (pPrint)
-import Text.RawString.QQ
-import Text.Regex.TDFA ((=~))
 
 data Cell
   = Robot
@@ -28,12 +23,6 @@ data Cell
   | Box Coordinate
   | Blank
   deriving (Show, Eq, Ord)
-
-width :: Cell -> Int
-width Wall = 1
-width (Box _) = 2
-width Blank = 1
-width Robot = 1
 
 parseCell :: Coordinate -> Char -> [Cell]
 parseCell _ '#' = [Wall, Wall]
@@ -50,10 +39,10 @@ parseDirection '>' = East
 parseDirection _ = throw $ userError "invalid direction"
 
 toChar :: Cell -> [Char]
-toChar Wall = "##"
+toChar Wall = "#"
 toChar (Box _) = "["
-toChar Blank = ".."
-toChar Robot = "@."
+toChar Blank = "."
+toChar Robot = "@"
 
 run :: IO ()
 run = do
