@@ -25,6 +25,8 @@ import Y2024.D14 qualified
 import Y2024.D14a qualified
 import Y2024.D15 qualified
 import Y2024.D15a qualified
+import Y2024.D16 qualified
+import Y2024.D16a qualified
 import Y2024.D6 qualified
 import Y2024.D6a qualified
 import Y2024.D7 qualified
@@ -89,4 +91,6 @@ run Options {year, day} =
     (2024, "D14a") -> Y2024.D14a.run
     (2024, "D15") -> Y2024.D15.run
     (2024, "D15a") -> Y2024.D15a.run
+    (2024, "D16") -> Y2024.D16.run
+    (2024, "D16a") -> Y2024.D16a.run
     _ -> throw $ userError "Not handled in main"

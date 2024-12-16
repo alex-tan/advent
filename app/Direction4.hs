@@ -4,10 +4,13 @@ import Coordinate
 
 data Direction4
   = North
-  | South
   | East
+  | South
   | West
   deriving (Show, Eq, Ord, Bounded, Enum)
+
+minTurns :: Direction4 -> Direction4 -> Integer
+minTurns d1 d2 = fromIntegral $ abs $ fromEnum d1 - fromEnum d2
 
 reverse :: Direction4 -> Direction4
 reverse North = South
@@ -23,6 +26,18 @@ directionToAdjustment North = Coordinate {x = 0, y = -1}
 directionToAdjustment South = Coordinate {x = 0, y = 1}
 directionToAdjustment East = Coordinate {x = 1, y = 0}
 directionToAdjustment West = Coordinate {x = -1, y = 0}
+
+turnRight :: Direction4 -> Direction4
+turnRight North = East
+turnRight East = South
+turnRight South = West
+turnRight West = North
+
+turnLeft :: Direction4 -> Direction4
+turnLeft North = West
+turnLeft East = North
+turnLeft South = East
+turnLeft West = South
 
 addDirection :: Coordinate -> Direction4 -> Coordinate
 addDirection coord dir = addCoordinate coord (directionToAdjustment dir)
