@@ -1,6 +1,7 @@
 module Direction4 where
 
 import Coordinate
+import Data.Hashable
 
 data Direction4
   = North
@@ -9,8 +10,22 @@ data Direction4
   | West
   deriving (Show, Eq, Ord, Bounded, Enum)
 
+instance Hashable Direction4 where
+  hashWithSalt salt North = hashWithSalt salt (0 :: Int)
+  hashWithSalt salt East = hashWithSalt salt (1 :: Int)
+  hashWithSalt salt South = hashWithSalt salt (2 :: Int)
+  hashWithSalt salt West = hashWithSalt salt (3 :: Int)
+
 minTurns :: Direction4 -> Direction4 -> Integer
-minTurns d1 d2 = fromIntegral $ abs $ fromEnum d1 - fromEnum d2
+minTurns d1 d2
+  | d1 == d2 = 0
+  | otherwise =
+      case (d1, d2) of
+        (North, South) -> 2
+        (South, North) -> 2
+        (East, West) -> 2
+        (West, East) -> 2
+        _ -> 1
 
 reverse :: Direction4 -> Direction4
 reverse North = South
@@ -41,6 +56,14 @@ turnLeft West = South
 
 addDirection :: Coordinate -> Direction4 -> Coordinate
 addDirection coord dir = addCoordinate coord (directionToAdjustment dir)
+
+relativeDirection :: Coordinate -> Coordinate -> Direction4
+relativeDirection Coordinate {x = x1, y = y1} Coordinate {x = x2, y = y2}
+  | y2 > y1 = South
+  | y2 < y1 = North
+  | x2 > x1 = East
+  | x2 < x1 = West
+  | otherwise = error "Not a relative direction"
 
 addDirections :: Coordinate -> [Coordinate]
 addDirections coord =
