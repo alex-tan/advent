@@ -5,6 +5,8 @@ module Y2024.D18 (run) where
 import Control.Exception (throw)
 import Coordinate hiding (inBounds)
 import Data.Function (on)
+import Data.Graph.AStar (aStar)
+import Data.HashSet qualified as HashSet
 import Data.List (intersperse, minimumBy, sortOn)
 import Data.List.Split (split, splitOn)
 import Data.Map.Strict qualified as Map
@@ -51,36 +53,30 @@ run = do
             finalCoordinate = coordinateYX 70 70,
             coordinateCount = 1024
           }
-  runSetup example
+  runSetup actual
 
 runSetup :: Setup -> IO ()
 runSetup setup@Setup {coordinateCount} = do
   content <- readFile $ file setup
   let coordinates :: [Coordinate] = map parseLine . lines $ content
   -- let turnToCorrupted :: TurnToCorrupted = foldl fall Map.empty (zip coordinates [0 ..])
-  let start = coordinateYX 0 0
-  let trails =
-        Trails
-          { incomplete =
-              [ Trail
-                  { path = Set.singleton start,
-                    turn = 0
-                  }
-              ],
-            complete = [],
-            leastSteps = Nothing
+  let invariant =
+        InvariantState
+          { corruptedCoordinates = Set.fromList $ take coordinateCount coordinates,
+            bounds = setup.bounds,
+            finalCoordinate = setup.finalCoordinate
           }
-  let state =
-        complete $
-          iterateTrails
-            ( InvariantState
-                { corruptedCoordinates = Set.fromList $ take coordinateCount coordinates,
-                  bounds = setup.bounds,
-                  finalCoordinate = setup.finalCoordinate
-                }
-            )
-            trails
-  pPrint $ minimumBy (compare `on` turn) state
+
+  -- let state = complete $ iterateTrails invariant trails
+  -- pPrint $ minimumBy (compare `on` turn) state
+  let z =
+        aStar
+          (HashSet.fromList . nextCoordinates_ invariant)
+          rawDistance
+          (rawDistance setup.finalCoordinate)
+          (== setup.finalCoordinate)
+          (coordinateYX 0 0)
+  pPrint $ fmap length z
 
 data Setup = Setup
   { file :: String,
@@ -103,91 +99,19 @@ data Bounds = Bounds
   }
   deriving (Show, Eq, Ord)
 
-nextCoordinates :: InvariantState -> Maybe Int -> Trail -> [Coordinate]
-nextCoordinates InvariantState {bounds, corruptedCoordinates, finalCoordinate} leastSteps Trail {path, turn} =
+nextCoordinates_ :: InvariantState -> Coordinate -> [Coordinate]
+nextCoordinates_ InvariantState {bounds, corruptedCoordinates, finalCoordinate} coord =
   let calculated =
-        Set.elemAt path 0
-          |> fromJust
+        coord
           |> addDirections
           |> filter
             ( \coord ->
                 inBounds bounds coord
                   && not (Set.member coord corruptedCoordinates)
-                  && not (Set.member coord path)
             )
           |> sortOn (Coordinate.rawDistance finalCoordinate)
-   in maybe
-        calculated
-        ( \steps ->
-            if turn > steps
-              then []
-              else calculated
-        )
-        leastSteps
+   in calculated
 
 inBounds :: Bounds -> Coordinate -> Bool
 inBounds Bounds {maxX, maxY} Coordinate {x, y} =
   x >= 0 && x <= maxX && y >= 0 && y <= maxY
-
-data Trails = Trails
-  { incomplete :: [Trail],
-    complete :: [Trail],
-    leastSteps :: Maybe Int
-  }
-
-data Trail = Trail
-  { path :: Set.OSet Coordinate,
-    turn :: Int
-  }
-  deriving (Show, Eq, Ord)
-
-data TrailNextStep
-  = Continue [Trail]
-  | CompleteUnsuccessfully
-  | CompleteSuccessfully Trail
-
-iterateTrails :: InvariantState -> Trails -> Trails
-iterateTrails invariantState trails =
-  let new =
-        foldl
-          ( \acc incompleteTrail ->
-              case iterateTrail invariantState (leastSteps acc) incompleteTrail of
-                Continue trails ->
-                  acc {incomplete = trails ++ incomplete acc}
-                CompleteUnsuccessfully ->
-                  acc
-                CompleteSuccessfully trail ->
-                  acc
-                    { complete = trail : complete acc,
-                      leastSteps =
-                        case leastSteps acc of
-                          Nothing -> Just $ turn trail
-                          Just steps -> Just $ min steps $ turn trail
-                    }
-          )
-          trails {incomplete = []}
-          (incomplete trails)
-   in if null (incomplete new)
-        then new
-        else iterateTrails invariantState new
-
-iterateTrail :: InvariantState -> Maybe Int -> Trail -> TrailNextStep
-iterateTrail invariantState@InvariantState {finalCoordinate} leastSteps trail =
-  let nextCoords = nextCoordinates invariantState leastSteps trail
-   in case nextCoords of
-        [] -> CompleteUnsuccessfully
-        coords ->
-          if finalCoordinate `elem` coords
-            then
-              CompleteSuccessfully $ addCoordinateToTrail trail finalCoordinate
-            else
-              coords
-                |> map (addCoordinateToTrail trail)
-                |> Continue
-
-addCoordinateToTrail :: Trail -> Coordinate -> Trail
-addCoordinateToTrail trail@Trail {path} coord =
-  trail
-    { path = (|<) coord path,
-      turn = turn trail + 1
-    }

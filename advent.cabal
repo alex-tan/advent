@@ -116,7 +116,6 @@ executable advent
         indexed-traversable,
         containers,
         raw-strings-qq,
-        hashmap,
         vector,
         split,
         parallel,
@@ -124,7 +123,10 @@ executable advent
         optparse-applicative,
         dlist,
         HUnit,
-        ordered-containers
+        ordered-containers,
+        unordered-containers,
+        astar,
+        hashable
 
     -- Directories containing source files.
     hs-source-dirs:   app

@@ -1,5 +1,6 @@
 module Coordinate where
 
+import Data.Hashable
 import Data.Map qualified as Map
 import Data.Maybe (fromJust)
 import Data.Set qualified as Set
@@ -10,6 +11,9 @@ data Coordinate = Coordinate
     x :: Integer
   }
   deriving (Show, Ord, Eq)
+
+instance Hashable Coordinate where
+  hashWithSalt s (Coordinate y' x') = hashWithSalt s (y', x')
 
 empty :: Coordinate
 empty = Coordinate 0 0
