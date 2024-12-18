@@ -65,6 +65,8 @@ executable advent
     other-modules:
         Y2024.D16a
         Y2024.D16
+        Y2024.D18a
+        Y2024.D18
         Y2024.D15a
         Y2024.D15
         Y2024.D14a
@@ -116,14 +118,17 @@ executable advent
         indexed-traversable,
         containers,
         raw-strings-qq,
-        hashmap,
         vector,
         split,
         parallel,
         async,
         optparse-applicative,
         dlist,
-        HUnit
+        HUnit,
+        ordered-containers,
+        unordered-containers,
+        astar,
+        hashable
 
     -- Directories containing source files.
     hs-source-dirs:   app
@@ -133,4 +138,6 @@ executable advent
     default-extensions:
         RecordWildCards,
         QuasiQuotes,
-        TupleSections
+        TupleSections,
+        DuplicateRecordFields,
+        OverloadedRecordDot

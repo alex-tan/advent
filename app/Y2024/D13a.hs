@@ -3,7 +3,6 @@ module Y2024.D13a (run) where
 import Control.Exception (throw)
 import Coordinate
 import Data.Function (on)
-import Data.HashMap (mapMaybe)
 import Data.List (group, intersperse, minimumBy)
 import Data.List.Split (splitOn)
 import Data.Maybe qualified
