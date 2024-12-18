@@ -39,6 +39,11 @@ distance :: Coordinate -> Coordinate -> Coordinate
 distance (Coordinate x1 y1) (Coordinate x2 y2) =
   Coordinate (abs (x1 - x2)) (abs (y1 - y2))
 
+rawDistance :: Coordinate -> Coordinate -> Integer
+rawDistance a b =
+  let Coordinate {x, y} = distance a b
+   in x + y
+
 offset :: Coordinate -> Coordinate -> Coordinate
 offset (Coordinate x1 y1) (Coordinate x2 y2) =
   Coordinate (x1 - x2) (y1 - y2)
